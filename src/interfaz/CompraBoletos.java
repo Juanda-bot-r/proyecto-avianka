@@ -127,7 +127,9 @@ public class CompraBoletos extends JFrame{
 			
 			panelTodo.add(lblCabina, BorderLayout.NORTH);
 		}
-
+		/*
+		 * ejemplo de comentario
+		 */
 		public void crearPanelInferior () {
 			JButton btnBack = new JButton("Volver");
 			JPanel panelInferior = new JPanel();
