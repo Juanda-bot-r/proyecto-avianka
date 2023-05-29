@@ -14,15 +14,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import logica.InformacionSerializada;
-import logica.LogicaCompraboletos;
+import logica.LogicaGlobal;
 
 public class agregarClientes extends JFrame {
 
 	/***/
 	private static final long serialVersionUID = 3L;
 
-	private ArrayList<String[]> clientesPreferenciales;
-	private ArrayList<String[]> clientesNormales;
+	private int clientesPreferenciales;
+	private int clientesNormales;
 	private JPanel panelTodo;
 	private JLabel labelId;
 	private JLabel nombre;
@@ -44,13 +44,15 @@ public class agregarClientes extends JFrame {
 	private JTextField ingresoDireccion ;
 	private JPanel panelSubInferior2;
 	private InformacionSerializada info;
-
+	private LogicaGlobal logicaG;
 	private JPanel panelSubInferior;
-	CompraBoletos principal;
+	private int CantidadMenores;
+	private CompraBoletos principal;
 	
 	
 	public agregarClientes(CompraBoletos ppal) {
 		principal=ppal;
+		logicaG= new LogicaGlobal();
 		info= new InformacionSerializada();
 		setSize(1000, 700);
 		setLocationRelativeTo(null);
@@ -64,14 +66,20 @@ public class agregarClientes extends JFrame {
 
 	public String[] agregarData() {
 		new ArrayList<String>();	
-		String [] dato=LogicaCompraboletos.agregarData(ingresoID.getText(), ingresoNombre.getText(),ingresoContactoEmergencia.getText(),ingresefechaNacimiento.getText(),ingresoDireccion.getText());
+		String [] dato=LogicaGlobal.agregarData(ingresoID.getText(), ingresoNombre.getText(),ingresoContactoEmergencia.getText(),ingresefechaNacimiento.getText(),ingresoDireccion.getText());
 		return dato;
 	}
-
 	public void crearPanelesTexfield() {
-		
 		panelSuperior = new JPanel();
 		JPanel JpanelBotones = new JPanel();
+		JButton BotonVolver= new JButton("Volver");
+		BotonVolver.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				principal.setVisible(true);
+			}
+		});
 		JButton botonEliminar = new JButton(" Eliminar ");
 		botonEliminar.addActionListener(new ActionListener() {
 
@@ -103,11 +111,15 @@ public class agregarClientes extends JFrame {
 					JOptionPane.showMessageDialog(null, "recuerde rellenar todos los espacios");
 				}
 				else {
+					if(logicaG.esMenor(ingresefechaNacimiento.getText())) {
+						JOptionPane.showMessageDialog(informacion, "Por favor revise no haber tomado ninguna de los puestos en la fila F"+"\n"+"de ser asi, presione el boton volver");
+						CantidadMenores++;
+					}
 					agregarData();
-					VentanaVentas ventanaVentas= new VentanaVentas(informacion);
+					VentanaVentas ventanaVentas= new VentanaVentas(informacion, principal);
 					ventanaVentas.setVisible(true);
 					info.leerInformacion("ruta.dat");
-					info.agregarCliente(ingresefechaNacimiento.getText(),ingresoNombre.getText(),ingresoContactoEmergencia.getText(),ingresoID.getText(),ingreseTelefono.getText(),ingresoDireccion.getText());
+					info.agregarCliente(ingresoNombre.getText(),ingresoID.getText(),ingreseTelefono.getText(),ingresoContactoEmergencia.getText(),ingresoDireccion.getText(),ingresefechaNacimiento.getText());
 					ingresefechaNacimiento.setText("");
 					ingresoNombre.setText("");
 					ingresoContactoEmergencia.setText("");
@@ -125,17 +137,18 @@ public class agregarClientes extends JFrame {
 		panelCentrado.add(panelSubInferior2);
 		JpanelBotones.add(jbuttonAceptar, BorderLayout.WEST);
 		JpanelBotones.add(botonEliminar, BorderLayout.EAST);
+		JpanelBotones.add(BotonVolver, BorderLayout.CENTER);
 		panelTodo.add(JpanelBotones, BorderLayout.SOUTH);
 
 	}
 
 	public void crearTexfield() {
-		labelId = new JLabel(" Ingrese el ID:	");
-		nombre = new JLabel(" Ingresoe el Nombre: ");
-		contactoEmergencia = new JLabel(" Ingrese el Contacto de Emergencia: ");
-		telefonoUser= new JLabel(" ingrese el telefono del usuario ");
-		direccion= new JLabel(" ingrese la direccion  del usuario ");
-		fechaNacimiento= new JLabel(" ingrese la fecha de nacimiento del usuario ");
+		labelId = new JLabel(" Ingrese el ID :  ");
+		nombre = new JLabel(" Ingrese el Nombre : ");
+		contactoEmergencia = new JLabel(" Ingrese el Contacto de Emergencia : ");
+		telefonoUser= new JLabel(" ingrese el telefono del usuario: ");
+		direccion= new JLabel(" ingrese la direccion  del usuario: ");
+		fechaNacimiento= new JLabel(" ingrese la fecha de nacimiento del usuario (aa-dd-ms): ");
 		ingreseTelefono= new JTextField();
 		ingreseTelefono.setPreferredSize(new Dimension(500,200));
 		ingresoDireccion= new JTextField();
@@ -177,5 +190,7 @@ public class agregarClientes extends JFrame {
 		setContentPane(panelTodo);
 		panelTodo.add(panelCentrado, BorderLayout.CENTER);
 	}
-
+	public int devolverCanTmenores() {
+		return CantidadMenores;
+	}
 }

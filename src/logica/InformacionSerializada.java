@@ -28,6 +28,8 @@ public class InformacionSerializada implements Serializable {
 	private ArrayList<String> direcciones; 
 	private ArrayList<String> fechasNacimiento;
 	private ArrayList<String[]> producto;
+	private ArrayList<ArrayList<String>> clientes;
+	
 	public final String ruta() {
 		String RUTA="src/logica/informacion.data";
 		return RUTA;
@@ -40,7 +42,8 @@ public class InformacionSerializada implements Serializable {
 		fechasNacimiento= new ArrayList<String>();
 		direcciones= new ArrayList<String>();
 		// en el boton en el actionlistener
-		guardaR(ruta());
+		//guardaR(ruta());
+		leerInformacion(ruta());
 	}
 
 	public boolean agregarCliente(String nombre, String identificacion,String telefono, String contactoEmergencia, String direccion, String fechaNacimiento ) {
@@ -60,7 +63,7 @@ public class InformacionSerializada implements Serializable {
 		return sePudoAgregar;
 	}
 
-	public boolean agregarProducto( String[] productos, String identificacion ) {
+	public boolean agregarProducto(String[] productos, String identificacion ) {
 		boolean centinela= true;
 		if(determinarClienteExiste(identificacion)) {
 			producto.add(productos);
@@ -151,6 +154,8 @@ public class InformacionSerializada implements Serializable {
 		fos = new FileOutputStream(nombreArchivo);
 		oos = new ObjectOutputStream(fos);
 		oos.writeObject(this);
+		
+		System.out.println(this.nombres.toString());
 		oos.close();
 		fos.close();
 	}
@@ -159,13 +164,15 @@ public class InformacionSerializada implements Serializable {
 	 * Permite deserializar un archivo
 	 * 
 	 * @param nombreArchivo Es el nombre del archivo
+	 * @return 
 	 * @return El dato serializado
 	 * @throws Exception
 	 * @throws IOException
 	 * @throws RuntimeException
 	 */
 	// limitar a las personas en el ingreso de datos;
-	public void deserialize(String nombreArchivo) throws Exception {
+	public  void deserialize(String nombreArchivo) throws Exception {
+		clientes = new ArrayList<ArrayList<String>>();
 		FileInputStream fis = new FileInputStream(nombreArchivo);
 		ObjectInputStream ois = new ObjectInputStream(fis);
 		InformacionSerializada data = (InformacionSerializada) ois.readObject();
@@ -176,9 +183,15 @@ public class InformacionSerializada implements Serializable {
 		fechasNacimiento= data.fechasNacimiento;
 		direcciones= data.direcciones;
 		producto= data.producto;
-		
+		clientes.add(identificaciones);
+		clientes.add(nombres);
+		clientes.add(direcciones);
+		clientes.add(fechasNacimiento);
+		clientes.add(contactosEmergencia);
+		clientes.add(telefonos);
 		ois.close();
 		fis.close();
+		
 	}
 	public void guardaR(String nombreArchivo) {
 		try {
@@ -198,6 +211,9 @@ public class InformacionSerializada implements Serializable {
 				
 			}
 		}
+	}
+	public ArrayList<ArrayList<String>> devolverArrays() {
+		return clientes;
 	}
 
 }

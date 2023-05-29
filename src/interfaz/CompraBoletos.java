@@ -9,7 +9,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import logica.LogicaCompraboletos;
+import logica.LogicaGlobal;
 
 public class CompraBoletos extends JFrame{
 		/**
@@ -22,15 +22,19 @@ public class CompraBoletos extends JFrame{
 		private JPanel lblCabina;
 		private JButton registrarCliente;
 		private JButton botonPresionado;
-		LogicaCompraboletos logcompras;
+		agregarClientes datos;
+		LogicaGlobal logcompras;
 		private JButton matrizBotones2[][];
 		private String silla;
+		private String numeroSillas;
+		private String[][] MatrizOcupadoIdpref;
+		private String[][] MatrizOcupadoIdnorm;
 		
 		public CompraBoletos() {
 			setSize(1280, 720);
 			setLocationRelativeTo(null);
 			setDefaultCloseOperation(EXIT_ON_CLOSE);
-			logcompras= new LogicaCompraboletos();
+			logcompras= new LogicaGlobal();
 			crearPanelTodo();
 			crearPanelMatrizBotones();
 			crearPanelSuperior();
@@ -40,6 +44,7 @@ public class CompraBoletos extends JFrame{
 			
 
 		public void crearPanelTodo () {
+			silla= new String();
 			panelTodo = new JPanel();
 			panelTodo.setLayout(new BorderLayout(5, 5));
 			setContentPane(panelTodo);
@@ -127,6 +132,8 @@ public class CompraBoletos extends JFrame{
 			panelTodo.add(lblCabina, BorderLayout.NORTH);
 		}
 		public void crearPanelInferior () {
+			MatrizOcupadoIdpref= new String[matrizBotones.length][matrizBotones[0].length];
+			MatrizOcupadoIdnorm= new String[matrizBotones2.length][matrizBotones2[0].length];
 			JButton btnBack = new JButton("Volver");
 			JPanel panelInferior = new JPanel();
 			registrarCliente= new JButton("Registrar Cliente");
@@ -137,18 +144,26 @@ public class CompraBoletos extends JFrame{
 			CompraBoletos informacion =this;
 			registrarCliente.addActionListener(new ActionListener(){
 				
-
+				/*
+				 * param: recibe un evento
+				 * return: no retorna pero muestra la ventana agregarCliente
+				 */
 				@Override
 				public void actionPerformed (ActionEvent e) {
 					boolean matriz1= logcompras.VerificarPuestosOcupado(matrizBotones) ;
 					boolean matriz2= logcompras.VerificarPuestosOcupado(matrizBotones2);
-				if( matriz1 || matriz2 ) {
-					silla=TipoSilla(matriz1, matriz2, matrizBotones, matrizBotones2);
+					int centinal=0;
+				if( matriz1 || matriz2 && centinal<=0) {
+					//String [] nuevosDatos=datos.agregarData();
+					//MatrizOcupadoIdpref=logcompras.OcupadorUser(matrizBotones, nuevosDatos[0]);
+					//MatrizOcupadoIdnorm=logcompras.OcupadorUser(matrizBotones2,nuevosDatos[0]);
+						centinal++;
+						JOptionPane.showMessageDialog(null, "recuerde que las azules tienen el valor de 50000 y las de la parte inferior cuestan 25000");	
+						silla=logcompras.TipoSilla(matriz1, matriz2, matrizBotones, matrizBotones2);
+						numeroSillas=logcompras.devolverSillas(matriz1,matriz2,matrizBotones, matrizBotones2);
+						agregarClientes agregarClientes = new agregarClientes(informacion);
+						agregarClientes.setVisible(true);	
 					
-					EnviarTiposilla();
-					agregarClientes agregarClientes = new agregarClientes(informacion);
-					agregarClientes.setVisible(true);
-				
 			}
 				else {
 					JOptionPane.showMessageDialog(informacion, "por favor tome un puesto");
@@ -161,23 +176,23 @@ public class CompraBoletos extends JFrame{
 				public void actionPerformed (ActionEvent e) {
 					System.exit(0);
 				}
+			
 			});}
 		
-		public String TipoSilla(boolean matrizuno, boolean matriz2, JButton matrizBotones[][] , JButton matrizBotones2[][]) {
-			int tipo=0;
-			String tipos= "";
-			if(matrizuno && matrizBotones!=null) {
-				logcompras.TipoSilla(tipo, matrizBotones);
-			}
-			else {
-				if(matriz2 && matrizBotones2!=null) {
-					logcompras.TipoSilla(tipo, matrizBotones2);
-				}
-			}
-			 
-			return tipos;
-		}
 		public String EnviarTiposilla() {
 			return silla;
+		}
+		public String enviarNumeroSillas() {
+			/*
+			 * ocupadas derecha libres izquierda
+			 */
+			System.out.println(numeroSillas);
+			return numeroSillas;
+		}
+		public String[][] devolverMatrizpref(){
+			return MatrizOcupadoIdpref;
+		}
+		public String[][] devolverMatriznorm(){
+			return MatrizOcupadoIdnorm;
 		}
 		}

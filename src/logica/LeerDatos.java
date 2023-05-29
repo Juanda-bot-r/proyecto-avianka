@@ -57,4 +57,14 @@ public static ArrayList<String> leerArraylist(String message, int tamanio){
 	}
 	return datos;
 }
+public String[] llenarArreglo( String message ) {
+	String [] arreglo1= new String[message.length()];
+	for(int i=0;i<message.length();i++) {
+		if(message.charAt(i)!=';') {
+			String aux=message.charAt(i)+"";
+			arreglo1[i]=aux; 
+		}
+	}
+	return arreglo1;
+}
 }
