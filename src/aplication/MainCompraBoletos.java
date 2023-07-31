@@ -8,6 +8,5 @@ public class MainCompraBoletos{
 	public static void main (String args[]) {
 		JFrame CompraBoletos= new CompraBoletos();
 		CompraBoletos.setVisible(true);
-		
 	}}
 
